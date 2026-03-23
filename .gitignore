@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+*.pyo
+clean_data.csv
+benchmark_results.txt
+PROJECT_SPEC.pdf
+PROJECT_SPEC.txt
+data/
+.kaggle/
