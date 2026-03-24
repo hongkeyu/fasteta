@@ -57,19 +57,20 @@ fasteta/
 └── benchmark_results.txt           ← auto-generated
 ```
 
-## Benchmark Results (Jetson Orin Nano, 6 cores)
+## Benchmark Results (Jetson Orin Nano, 6 cores, 7392 rows)
 
-| Stage | Time (s) | Speedup | MAE (min) |
-|-------|----------|---------|-----------|
+| Stage | Time (s) | Speedup vs Baseline | MAE (min) |
+|-------|----------|---------------------|-----------|
 | Stage 1: Baseline | 0.768 | 1.00x | 15.04 |
 | Stage 2: + NumPy + Numba | 0.001 | 739x | 15.04 |
-| Stage 3: + Zone Lookup | 0.088 | 8.7x | 14.86 |
-| Stage 4: + Parallel | 0.169 | 4.5x | 14.86 |
+| Stage 3: + Zone Lookup | 0.005 | 153x | 14.86 |
+| Stage 4: + Parallel | 0.117 | 6.6x | 14.86 |
 
 **Notes:**
 - Stage 2 achieves massive speedup via Numba JIT compilation of the haversine loop
-- Stage 3 is slower than Stage 2 because zone lookup adds a Python-level loop, but MAE improves (zone features carry predictive signal)
-- Stage 4 is slower than Stage 3 at this dataset size (~7k rows) due to process spawn overhead; speedup becomes positive at n ≥ 2000
+- Stage 3 uses vectorized integer key encoding (`np.round` + `lat*100000+lon`) to avoid per-row Python `round()`/`tuple()` overhead — 19x faster than naive dict lookup loop
+- Stage 3 MAE improves over Stage 2 because zone features carry real predictive signal
+- Stage 4 is slower than Stage 3 at this dataset size (~7k rows) due to process spawn overhead (~0.1s fixed cost); speedup becomes positive at n ≥ 2000
 
 ## Advanced Python Concepts
 
