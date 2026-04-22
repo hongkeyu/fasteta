@@ -4,3 +4,4 @@ numba
 xgboost
 scikit-learn
 line_profiler
+kagglehub

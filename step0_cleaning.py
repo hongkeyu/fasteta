@@ -1,10 +1,44 @@
 """
 step0_cleaning.py
-Run once. Produces clean_data.csv from raw data.
+Run once. Downloads data from Kaggle (if needed) and produces clean_data.csv.
 """
+import os
+import shutil
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
+
+RAW_DATA = "data/Food_Time_new.csv"
+
+
+def download_data():
+    """Download dataset from Kaggle if not already present."""
+    if os.path.exists(RAW_DATA):
+        return
+    try:
+        import kagglehub
+    except ImportError:
+        raise RuntimeError(
+            "Raw data not found and kagglehub is not installed.\n"
+            "Either:\n"
+            "  1) pip install kagglehub   (auto-download), or\n"
+            "  2) Download manually from https://www.kaggle.com/datasets/"
+            "willianoliveiragibin/food-delivery-time\n"
+            f"     and place the CSV at {RAW_DATA}"
+        )
+    print("Downloading dataset from Kaggle ...")
+    path = kagglehub.dataset_download("willianoliveiragibin/food-delivery-time")
+    # Kaggle file is named "Food_Time new.csv" (with space)
+    src = os.path.join(path, "Food_Time new.csv")
+    if not os.path.exists(src):
+        # fallback: pick the first csv in the download dir
+        csvs = [f for f in os.listdir(path) if f.endswith(".csv")]
+        if not csvs:
+            raise FileNotFoundError(f"No CSV found in {path}")
+        src = os.path.join(path, csvs[0])
+    os.makedirs("data", exist_ok=True)
+    shutil.copy(src, RAW_DATA)
+    print(f"Saved to {RAW_DATA}")
 
 
 def fix_coordinate(value):
@@ -34,7 +68,8 @@ def fix_target(value):
 
 
 def main():
-    df = pd.read_csv("data/Food_Time_new.csv")
+    download_data()
+    df = pd.read_csv(RAW_DATA)
     rows_before = len(df)
     print(f"Rows before cleaning: {rows_before}")
 

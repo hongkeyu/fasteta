@@ -27,8 +27,10 @@ cd fasteta
 # Install dependencies
 pip install -r requirements.txt
 
-# Download dataset from Kaggle
-# Place Food_Time_new.csv in data/
+# Step 0 auto-downloads the dataset from Kaggle.
+# If you prefer manual download:
+#   https://www.kaggle.com/datasets/willianoliveiragibin/food-delivery-time
+#   Place the CSV as data/Food_Time_new.csv
 ```
 
 ## Usage
