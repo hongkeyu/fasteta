@@ -20,8 +20,12 @@ Build a food delivery ETA prediction pipeline and optimize it **cumulatively** �
 ## Setup
 
 ```bash
+# Clone the repo
+git clone https://github.com/hongkeyu/fasteta.git
+cd fasteta
+
 # Install dependencies
-pip install pandas numpy numba xgboost scikit-learn line_profiler
+pip install -r requirements.txt
 
 # Download dataset from Kaggle
 # Place Food_Time_new.csv in data/
@@ -54,10 +58,11 @@ fasteta/
 ├── stage4_parallel.py              ← cumulative: +Parallel
 ├── model.py                        ← XGBoost train/evaluate (shared)
 ├── benchmark_runner.py             ← runs everything, writes results
-└── benchmark_results.txt           ← auto-generated
+├── benchmark_results.txt           ← auto-generated
+└── requirements.txt                ← pip dependencies
 ```
 
-## Benchmark Results (Jetson Orin Nano, 6 cores, 7392 rows)
+## Benchmark Results (6 cores, 7392 rows)
 
 | Stage | Time (s) | Speedup vs Baseline | MAE (min) |
 |-------|----------|---------------------|-----------|
